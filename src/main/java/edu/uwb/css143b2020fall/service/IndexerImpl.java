@@ -43,10 +43,7 @@ public class IndexerImpl implements Indexer {
                 List<Integer> positionList = keyList.get(docIndex);
                 //add this position to that position list
                 positionList.add(wordIndex);
-                //put back the position list into the keyList
-                keyList.set(docIndex, positionList);
-                //put back the updated word into the indexes hashtable
-                indexes.put(split[wordIndex], keyList);
+
             }
         }
         return indexes;
