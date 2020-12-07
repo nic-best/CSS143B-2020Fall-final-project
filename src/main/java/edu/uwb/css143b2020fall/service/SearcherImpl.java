@@ -107,17 +107,21 @@ public class SearcherImpl implements Searcher {
 
         //for each word in phrase
         for (String word : phrase) {
+            System.out.println("word = " + word);
             List<List<Integer>> thisWord = index.get(word);
+            System.out.println(word+ " = " + thisWord);
             //for each doc in common docs
-            for (int commonIndex = 0; commonIndex < commonDocuments.size(); commonIndex++) {
-                int thisDocumentID = commonDocuments.get(commonIndex);
+            for (int thisDocumentID : commonDocuments) {
+                System.out.println("thisDocumentID = " + thisDocumentID);
                 if (!locationLists.containsKey(thisDocumentID)) {
                     locationLists.put(thisDocumentID, new ArrayList<List<Integer>>());
                 }
                 List<List<Integer>> thisDocLocationList = locationLists.get(thisDocumentID);
-                thisDocLocationList.add(thisWord.get(commonIndex));
+                thisDocLocationList.add(new ArrayList<Integer>(thisWord.get(thisDocumentID)));
+                System.out.println("locationLists.get(thisDocumentID) = " + locationLists.get(thisDocumentID));
             }
         }
+        System.out.println("locationLists = " + locationLists);
         return locationLists;
     }
 
@@ -125,13 +129,13 @@ public class SearcherImpl implements Searcher {
         Set<Integer> common = new HashSet<Integer>();
         //if we have any words in the query, add the first word's locations to the set
         if(documents.size()>0){
-            common.addAll(documents.get(0));
+            common.addAll(new ArrayList<Integer>(documents.get(0)));
         }
         //cycles through the documents (each int list is one word, each val in the int list is the document location for that word)
         for (int outer = 1; outer < documents.size(); outer++) {
             List<Integer> innerDoc = documents.get(outer);
             //get the intersection with the next word
-            common.retainAll(innerDoc);
+            common.retainAll(new ArrayList<Integer>(innerDoc));
         }
         //add all nums from our set to the an ArrayList of common doc numbers
         List<Integer> commonDocIds = new ArrayList<Integer>(common);
