@@ -2,19 +2,26 @@ package edu.uwb.css143b2020fall.service;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class SearcherImpl implements Searcher {
     public List<Integer> search(String keyPhrase, Map<String, List<List<Integer>>> index) {
 
-
+        System.out.println("keyPhrase = " + keyPhrase + ", index = " + index);
         //split the keyphrase into words by space
         keyPhrase = keyPhrase.trim();
+        
+        //if the query is empty, return an empty list
+        if(keyPhrase.length()==0){
+            return new ArrayList<Integer>();
+        }
         String[] phraseArray = keyPhrase.split("\\s+");
+
+        //if any of the words in the query don't show up in any of the documents at all, return an empty list
+        if(!allWordsAppear(index, phraseArray)){
+            return new ArrayList<Integer>();
+        }
 
         //documents contains one integer list for each word. The integer list is comprised of the document locations for that word
         List<List<Integer>> documents = getDocuments(index, phraseArray);
@@ -39,6 +46,15 @@ public class SearcherImpl implements Searcher {
         to find intersections, add all unique values to a hashmap
          */
         return result;
+    }
+
+    private boolean allWordsAppear(Map<String, List<List<Integer>>> index, String[] phraseArray){
+        for(int i =0; i<phraseArray.length; i++){
+            if(!index.containsKey(phraseArray[i])){
+                return false;
+            }
+        }
+        return true;
     }
 
     private List<Integer> findValidDocs(HashMap<Integer, List<List<Integer>>> locationLists, List<Integer> commonDocuments) {
@@ -106,27 +122,21 @@ public class SearcherImpl implements Searcher {
     }
 
     private List<Integer> getCommonDocs(List<List<Integer>> documents) {
-        HashMap<Integer, Integer> common = new HashMap<Integer, Integer>();
-        for (int outer = 0; outer < documents.size(); outer++) {
+        Set<Integer> common = new HashSet<Integer>();
+        //if we have any words in the query, add the first word's locations to the set
+        if(documents.size()>0){
+            common.addAll(documents.get(0));
+        }
+        //cycles through the documents (each int list is one word, each val in the int list is the document location for that word)
+        for (int outer = 1; outer < documents.size(); outer++) {
             List<Integer> innerDoc = documents.get(outer);
-            for (int inner = 0; inner < innerDoc.size(); inner++) {
-                if (!common.containsKey(innerDoc.get(inner))) {
-                    common.put(innerDoc.get(inner), 1);
-                } else {
-                    common.put(inner, common.get(inner) + 1);
-                }
-            }
+            //get the intersection with the next word
+            common.retainAll(innerDoc);
         }
-
-        //cycle through common, add all integers that have the value that matches the num of docs
-        //if the value matches the num of docs, it means that this document has all words in the query
-        List<Integer> commonDocs = new ArrayList<Integer>();
-        for (int commonIndex = 0; commonIndex < common.size(); commonIndex++) {
-            if (common.get(commonIndex) == documents.size()) {
-                commonDocs.add(commonIndex);
-            }
-        }
-        return commonDocs;
+        //add all nums from our set to the an ArrayList of common doc numbers
+        List<Integer> commonDocIds = new ArrayList<Integer>(common);
+        System.out.println("commonDocIds = " + commonDocIds);
+        return commonDocIds;
     }
 
     private List<List<Integer>> getDocuments(Map<String, List<List<Integer>>> index, String[] phraseArray) {
@@ -142,6 +152,9 @@ public class SearcherImpl implements Searcher {
         for (int phraseWordIndex = 0; phraseWordIndex < phraseArray.length; phraseWordIndex++) {
             //TODO: only do this .size once (before this for loop)
             //TODO: OR only call index.get once per word in the query
+            //System.out.println(index.toString());
+            //System.out.println("phraseWordIndex = " + phraseWordIndex);
+            System.out.println("phraseArray[PhraseWordIndex] = " + phraseArray[phraseWordIndex]);
             int numDocuments = index.get(phraseArray[phraseWordIndex]).size();
             //for each document position list for this word in the index hashtable
             for (int documentIndex = 0; documentIndex < numDocuments; documentIndex++) {
