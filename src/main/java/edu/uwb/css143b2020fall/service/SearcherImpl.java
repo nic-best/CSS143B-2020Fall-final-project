@@ -8,7 +8,6 @@ import java.util.*;
 public class SearcherImpl implements Searcher {
     public List<Integer> search(String keyPhrase, Map<String, List<List<Integer>>> index) {
 
-        System.out.println("keyPhrase = " + keyPhrase + ", index = " + index);
         //split the keyphrase into words by space
         keyPhrase = keyPhrase.trim();
         
@@ -107,21 +106,16 @@ public class SearcherImpl implements Searcher {
 
         //for each word in phrase
         for (String word : phrase) {
-            System.out.println("word = " + word);
             List<List<Integer>> thisWord = index.get(word);
-            System.out.println(word+ " = " + thisWord);
             //for each doc in common docs
             for (int thisDocumentID : commonDocuments) {
-                System.out.println("thisDocumentID = " + thisDocumentID);
                 if (!locationLists.containsKey(thisDocumentID)) {
                     locationLists.put(thisDocumentID, new ArrayList<List<Integer>>());
                 }
                 List<List<Integer>> thisDocLocationList = locationLists.get(thisDocumentID);
                 thisDocLocationList.add(new ArrayList<Integer>(thisWord.get(thisDocumentID)));
-                System.out.println("locationLists.get(thisDocumentID) = " + locationLists.get(thisDocumentID));
             }
         }
-        System.out.println("locationLists = " + locationLists);
         return locationLists;
     }
 
@@ -139,7 +133,6 @@ public class SearcherImpl implements Searcher {
         }
         //add all nums from our set to the an ArrayList of common doc numbers
         List<Integer> commonDocIds = new ArrayList<Integer>(common);
-        System.out.println("commonDocIds = " + commonDocIds);
         return commonDocIds;
     }
 
@@ -156,9 +149,6 @@ public class SearcherImpl implements Searcher {
         for (int phraseWordIndex = 0; phraseWordIndex < phraseArray.length; phraseWordIndex++) {
             //TODO: only do this .size once (before this for loop)
             //TODO: OR only call index.get once per word in the query
-            //System.out.println(index.toString());
-            //System.out.println("phraseWordIndex = " + phraseWordIndex);
-            System.out.println("phraseArray[PhraseWordIndex] = " + phraseArray[phraseWordIndex]);
             int numDocuments = index.get(phraseArray[phraseWordIndex]).size();
             //for each document position list for this word in the index hashtable
             for (int documentIndex = 0; documentIndex < numDocuments; documentIndex++) {
