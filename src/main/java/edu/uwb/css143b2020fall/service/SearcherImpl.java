@@ -47,6 +47,11 @@ public class SearcherImpl implements Searcher {
         return result;
     }
 
+    /*
+    checks if any of the words in the query do not appear in the documents at all
+    allows us to return an empty list immediately if the query is not a valid one
+     */
+
     private boolean allWordsAppear(Map<String, List<List<Integer>>> index, String[] phraseArray){
         for(int i =0; i<phraseArray.length; i++){
             if(!index.containsKey(phraseArray[i])){
@@ -55,6 +60,10 @@ public class SearcherImpl implements Searcher {
         }
         return true;
     }
+
+    /*
+    returns a list of all documents that are valid results for our search query
+     */
 
     private List<Integer> findValidDocs(HashMap<Integer, List<List<Integer>>> locationLists, List<Integer> commonDocuments) {
         List<Integer> result = new ArrayList<>();
@@ -66,14 +75,17 @@ public class SearcherImpl implements Searcher {
             for (int queryIndex = 0; queryIndex < document.size(); queryIndex++) {
                 List<Integer> aWordIndexes = document.get(queryIndex);
 
+                //INTEGER MATH FROM LECTURE:
                 //each loop iteration subtracts the current index in the list from the location value of that word in a document
-                //after this subtraction, of any document has a common value for all words, then we know that this document is a valid result for the search query
+                //after this subtraction, if any document has a common value for all words, then we know that this document is a valid result for the search query
+                //  This will be checked in the "isValidDoc" method in the loop below
                 for (int indexIndex = 0; indexIndex < aWordIndexes.size(); indexIndex++) {
                     int index = aWordIndexes.get(indexIndex);
                     aWordIndexes.set(indexIndex, index - queryIndex);
                 }
             }
         }
+        //adds any valid documents to a list
         for(int doc: commonDocuments){
             if(isValidDoc(locationLists,doc)){
                 result.add(doc);
@@ -81,6 +93,10 @@ public class SearcherImpl implements Searcher {
         }
         return result;
     }
+
+    /*
+    checks if this specific document is a valid doc for our search query
+     */
 
     private boolean isValidDoc(HashMap<Integer, List<List<Integer>>> locationLists, int docNum) {
         List<Integer> validNumList = locationLists.get(docNum).get(0); //get the first word's numbers
@@ -99,6 +115,13 @@ public class SearcherImpl implements Searcher {
         }
         return validSoFar;
     }
+
+    /*
+    returns a hashmap which has keys of document id numbers. The value is a list of integer lists.
+    Each of the inner integer lists correspond to a word from the search phrase
+    The inner integer lists are ordered in the order of the search phrase
+    the inner integer lists contain the locations of that word in a specific document (the document in question is the key of the hashmap)
+     */
 
     private HashMap<Integer, List<List<Integer>>> getLocationLists(Map<String, List<List<Integer>>> index, String[] phrase, List<Integer> commonDocuments) {
         //<Document number, {{word 1 indexes}, {word 2 indexes}, etc.}
@@ -119,6 +142,10 @@ public class SearcherImpl implements Searcher {
         return locationLists;
     }
 
+    /*
+    returns a list of the document id numbers of the documents that contain all the words in the query
+     */
+
     private List<Integer> getCommonDocs(List<List<Integer>> documents) {
         Set<Integer> common = new HashSet<Integer>();
         //if we have any words in the query, add the first word's locations to the set
@@ -135,6 +162,10 @@ public class SearcherImpl implements Searcher {
         List<Integer> commonDocIds = new ArrayList<Integer>(common);
         return commonDocIds;
     }
+
+    /*
+    get the document locations for all the words in the query, each word's locations are in an integer list.
+     */
 
     private List<List<Integer>> getDocuments(Map<String, List<List<Integer>>> index, String[] phraseArray) {
         //first list corresponds to the word, inner list corresponds to the documents that each word is in
