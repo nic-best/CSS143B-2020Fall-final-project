@@ -178,13 +178,12 @@ public class SearcherImpl implements Searcher {
 
         //for each word in the keyPhrase
         for (int phraseWordIndex = 0; phraseWordIndex < phraseArray.length; phraseWordIndex++) {
-            //TODO: only do this .size once (before this for loop)
-            //TODO: OR only call index.get once per word in the query
-            int numDocuments = index.get(phraseArray[phraseWordIndex]).size();
+            List<List<Integer>> docList = index.get(phraseArray[phraseWordIndex]);
+            int numDocuments = docList.size();
             //for each document position list for this word in the index hashtable
             for (int documentIndex = 0; documentIndex < numDocuments; documentIndex++) {
                 //get the current document position list
-                List<Integer> documentPosList = index.get(phraseArray[phraseWordIndex]).get(documentIndex);
+                List<Integer> documentPosList = docList.get(documentIndex);
                 //if this position list has at least one instance of the word
                 if (docHasWord(phraseArray[phraseWordIndex], documentPosList)) {
                     //add it to the integer list for this word
