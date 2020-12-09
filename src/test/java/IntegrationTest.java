@@ -33,6 +33,61 @@ public class IntegrationTest {
             assertEquals(testCase.expect, actual);
         }
     }
+    //extra credit test:
+
+    @Test
+    public void testIntegration2(){
+        List<TestCase> cases = getTestCase2();
+        for (TestCase testCase : cases) {
+            List<Integer> actual = searcher.search(
+                    testCase.target,
+                    indexer.index(testCase.documents)
+            );
+            assertEquals(testCase.expect, actual);
+        }
+    }
+    //new test case method:
+    private List<TestCase> getTestCase2(){
+        List<String> documents = Util.getDocumentsForIntTest2();
+
+        List<TestCase> testCases = new ArrayList<>(Arrays.asList(
+                new TestCase(
+                        documents,
+                        //no result for empty search (even if the document is empty) expected
+                        "",
+                        Util.emptyResult()
+                ),
+                new TestCase(
+                        documents,
+                        "hello world",
+                        Util.emptyResult()
+                ),
+                new TestCase(
+                        documents,
+                        "programming",
+                        new ArrayList<>(Arrays.asList(0, 3, 4))
+                ),
+                new TestCase(
+                        documents,
+                        "programming is",
+                        new ArrayList<>(Arrays.asList(0, 3))
+                ),
+                new TestCase(
+                        documents,
+                        "super",
+                        //should only give the document where super shows up, not superbly
+                        new ArrayList<>(Arrays.asList(0))
+                ),
+                new TestCase(
+                        documents,
+                        "superbly",
+                        new ArrayList<>(Arrays.asList(1))
+                )
+
+        ));
+
+        return testCases;
+    }
 
     private List<TestCase> getTestCase() {
         List<String> documents = Util.getDocumentsForIntTest();

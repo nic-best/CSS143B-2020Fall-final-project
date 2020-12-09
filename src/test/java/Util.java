@@ -127,6 +127,91 @@ public class Util {
         );
     }
 
+    //extra credit methods:
+
+
+    public static List<String> getDocumentsForIntTest2(){
+        return new ArrayList<>(
+                Arrays.asList(
+                        "programming is super fun",
+                        //superbly tests the "super" substring
+                        "user is fun superbly",
+                        "",
+                        "programming is fun",
+                        "fun programming fun"
+                )
+        );
+    }
+
+    public static Map<String, List<List<Integer>>> getIndexForIndexerTest2() {
+        Map<String, List<List<Integer>>> index = new HashMap<String, List<List<Integer>>>() {{
+            put("programming", new ArrayList<>(
+                    Arrays.asList(
+                            // "programming" appears in doc 0 at location 0
+                            new ArrayList<>(Arrays.asList(0)),
+                            // "programming" doesnt appear in doc 1 at any location
+                            new ArrayList<>(),
+                            new ArrayList<>(),
+                            // "programming" appears in doc 3 at location 0
+                            new ArrayList<>(Arrays.asList(0)),
+                            new ArrayList<>(Arrays.asList(1))
+
+                    ))
+            );
+            put("is", new ArrayList<>(
+                    Arrays.asList(
+                            new ArrayList<>(Arrays.asList(1)),
+                            new ArrayList<>(Arrays.asList(2)),
+                            new ArrayList<>(),
+                            new ArrayList<>(Arrays.asList(1)),
+                            new ArrayList<>()
+
+                    ))
+            );
+            put("super", new ArrayList<>(
+                    Arrays.asList(
+                            new ArrayList<>(Arrays.asList(2)),
+                            new ArrayList<>(Arrays.asList(0)),
+                            new ArrayList<>(),
+                            new ArrayList<>(),
+                            new ArrayList<>()
+
+                    ))
+            );
+            put("fun", new ArrayList<>(
+                    Arrays.asList(
+                            new ArrayList<>(Arrays.asList(3)),
+                            new ArrayList<>(Arrays.asList(3)),
+                            new ArrayList<>(),
+                            new ArrayList<>(Arrays.asList(2)),
+                            new ArrayList<>(Arrays.asList(0,2))
+
+                    ))
+            );
+            put("user", new ArrayList<>(
+                    Arrays.asList(
+                            new ArrayList<>(),
+                            new ArrayList<>(Arrays.asList(1)),
+                            new ArrayList<>(),
+                            new ArrayList<>(),
+                            new ArrayList<>()
+
+                    ))
+            );
+            put("superbly", new ArrayList<>(
+                    Arrays.asList(
+                            new ArrayList<>(),
+                            new ArrayList<>(Arrays.asList(4)),
+                            new ArrayList<>(),
+                            new ArrayList<>(),
+                            new ArrayList<>()
+
+                    ))
+            );
+        }};
+        return index;
+    }
+
     public static List<Integer> emptyResult() {
         return new ArrayList<>();
     }
