@@ -31,19 +31,8 @@ public class SearcherImpl implements Searcher {
         //get the locations of each word in the documents where all words are found
         HashMap<Integer, List<List<Integer>>> locationLists = getLocationLists(index, phraseArray, commonDocuments);
 
+        //do the location math to find the valid results
         List<Integer> result = findValidDocs(locationLists, commonDocuments);
-        /*
-
-        //for the each document in the common documents list
-        //  go down the query (starting from the first word)
-        //  get its location in the document, add it to an int list
-        //  if all the documents are have a location difference of one ex. (3,4,5). then it is the correct order
-
-        determine whether search words are in the correct order
-
-
-        to find intersections, add all unique values to a hashmap
-         */
         return result;
     }
 
@@ -136,6 +125,7 @@ public class SearcherImpl implements Searcher {
                     locationLists.put(thisDocumentID, new ArrayList<List<Integer>>());
                 }
                 List<List<Integer>> thisDocLocationList = locationLists.get(thisDocumentID);
+                //get the locations of this word from the index (for this document)
                 thisDocLocationList.add(new ArrayList<Integer>(thisWord.get(thisDocumentID)));
             }
         }
